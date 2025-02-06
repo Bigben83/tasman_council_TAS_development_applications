@@ -65,7 +65,9 @@ doc.css('.wpfilebase-file-default').each_with_index do |row, index|
   council_reference = description.split(' - ').first
   document_description = row.at_css('.filetitle a')['href']
   on_notice_to = description.match(/(\d{1,2} [A-Za-z]+ \d{4})/)&.captures&.first
-  date_received = row.at_css('.details tr td:contains("Date:")').next_element.text.strip
+  # date_received = row.at_css('.details tr td:contains("Date:")').next_element.text.strip
+  date_received_str = row.at_css('.details tr td:contains("Date:")').next_element.text.strip
+  date_received = Date.strptime(date_received_str, "%A, %d %B, %Y").to_s
   
   # Log the extracted data for debugging purposes
   logger.info("Extracted Data: Title: #{description}, Date Received: #{date_received}, URL: #{document_description}, Council Reference: #{council_reference}, On Notice To: #{on_notice_to}")
