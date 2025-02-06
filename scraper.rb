@@ -75,8 +75,8 @@ doc.css('.wpfilebase-file-default').each_with_index do |row, index|
 
   if existing_entry.empty? # Only insert if the entry doesn't already exist
     # Save data to the database
-    db.execute("INSERT INTO tasman (description, date_received, document_description, council_reference, on_notice_to) 
-      VALUES (?, ?, ?, ?, ?)", [description, date_received, document_description, council_reference, on_notice_to])
+    db.execute("INSERT INTO tasman (description, date_received, document_description, council_reference, on_notice_to, date_scraped) 
+      VALUES (?, ?, ?, ?, ?, ?)", [description, date_received, document_description, council_reference, on_notice_to, date_scraped])
 
     logger.info("Data for #{council_reference} saved to database.")
   else
