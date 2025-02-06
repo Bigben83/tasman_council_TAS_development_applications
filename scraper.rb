@@ -61,7 +61,7 @@ date_scraped = Date.today.to_s
 
 # Step 4: Extract data for each document
 doc.css('.wpfilebase-file-default').each_with_index do |row, index|
-  document_title = row.at_css('.filetitle a').text.strip
+  description = row.at_css('.filetitle a').text.strip
   council_reference = document_title.split(' - ').first
   url = row.at_css('.filetitle a')['href']
   on_notice_to = document_title.match(/(\d{1,2} [A-Za-z]+ \d{4})/)&.captures&.first
@@ -69,15 +69,15 @@ doc.css('.wpfilebase-file-default').each_with_index do |row, index|
   date_received = row.at_css('.details tr td:contains("Date:")').next_element.text.strip
 
   # Log the extracted data for debugging purposes
-  logger.info("Extracted Data: Title: #{document_title}, Date: #{date_received}, URL: #{document_description}")
+  logger.info("Extracted Data: Title: #{description}, Date: #{date_received}, URL: #{document_description}")
 
   # Step 5: Ensure the entry does not already exist before inserting
   existing_entry = db.execute("SELECT * FROM tasman WHERE council_reference = ?", council_reference)
 
   if existing_entry.empty? # Only insert if the entry doesn't already exist
     # Save data to the database
-    db.execute("INSERT INTO tasman (document_title, date_received, document_description, council_reference, on_notice_to) 
-      VALUES (?, ?, ?, ?, ?)", [document_title, date_received, document_description, council_reference, on_notice_to])
+    db.execute("INSERT INTO tasman (description, date_received, document_description, council_reference, on_notice_to) 
+      VALUES (?, ?, ?, ?, ?)", [description, date_received, document_description, council_reference, on_notice_to])
 
     logger.info("Data for #{council_reference} saved to database.")
   else
